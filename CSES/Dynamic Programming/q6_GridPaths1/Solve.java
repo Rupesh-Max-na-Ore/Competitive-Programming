@@ -1,5 +1,7 @@
-"""
-Grid Paths I
+import java.util.*;
+
+/*
+ * Grid Paths I
 
 Task
 Submit
@@ -59,48 +61,34 @@ Input:
 
 Output:
 3
-"""
+ */
 
+public class Solve {
+    static final int MOD = 1000000007;
 
-def fn(x, y, a):
-    # base case
-    if x == 0 and y == 0:
-        return 1
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        char[][] grid = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            grid[i] = sc.next().toCharArray();
+        }
 
-    #  recurring case
-    res = 0
-    res += fn(x - 1, y, a) if x - 1 >= 0 and a[x - 1][y] != "*" else 0
-    res += fn(x, y - 1, a) if y - 1 >= 0 and a[x][y - 1] != "*" else 0
+        int[][] dp = new int[n][n];
 
-    return res
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '*') {
+                    dp[i][j] = 0;
+                } else if (i == 0 && j == 0) {
+                    dp[i][j] = 1;
+                } else {
+                    if (i > 0) dp[i][j] = (dp[i][j] + dp[i-1][j]) % MOD;
+                    if (j > 0) dp[i][j] = (dp[i][j] + dp[i][j-1]) % MOD;
+                }
+            }
+        }
 
-
-n = int(input())
-a = [list(input().strip()) for _ in range(n)]
-
-res = fn(n - 1, n - 1, a)
-print(res)
-
-
-"""
-# Similarly
-def fn(x, y, a):
-    # Out of bounds
-    if x < 0 or y < 0:
-        return 0
-    # Trap cell
-    if a[x][y] == "*":
-        return 0
-    # Base case: start cell
-    if x == 0 and y == 0:
-        return 1
-
-    # Recurring case
-    return fn(x - 1, y, a) + fn(x, y - 1, a)
-
-n = int(input())
-a = [list(input().strip()) for _ in range(n)]
-
-res = fn(n - 1, n - 1, a)
-print(res)
-"""
+        System.out.println(dp[n-1][n-1]);
+    }
+}
