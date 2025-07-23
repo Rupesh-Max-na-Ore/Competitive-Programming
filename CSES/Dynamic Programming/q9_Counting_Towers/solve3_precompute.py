@@ -66,7 +66,7 @@ Output:
 640403945
 """
 
-# Most recommended way
+# Most recommended way for CP
 
 MOD = 10**9 + 7
 MAX_N = 10**6 + 1
