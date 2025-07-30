@@ -13,7 +13,9 @@ for i in range(1, n):
 
 # Fill for lengths >= 3
 for length in range(3, n + 1):  # length of subarray
-    for l in range(n - length + 1):
+    for l in range(
+        n - length + 1
+    ):  # l start n-2 only, [r-l] keeps increasing with length tracking it
         r = l + length - 1
         dp[l][r] = max(
             a[l]
@@ -29,3 +31,5 @@ for length in range(3, n + 1):  # length of subarray
         )
 
 print(dp[0][n - 1])
+
+# This solution TLE in python due to so many ifs
