@@ -40,3 +40,5 @@ for i in range(n, 0, -1):
             dp[i][j] += dp[i + 1][j + i]
 
 print((dp[1][0] // 2) % MOD)
+
+# Still TLE on python, java solution is accepted
