@@ -339,3 +339,91 @@ public class CountingNumbers {
 
 Would you like me to also **add debug printing** in the Java code (to show the transitions and memo hits for, say, `a=101, b=123`) so you can actually *see* memoization in action?
 
+Perfect 👍 — let’s take that final **Python version that passes all test cases**, and port it into clean **Java** code with the same handling for `a=0`, `b=0`, and the leading zeros case.
+
+Here’s the Java implementation:
+
+```java
+import java.util.*;
+
+public class DigitDP {
+    static int[] digits;
+    static int[][][][] dp; 
+    // dp[pos][prev+1][tight][leading]
+    // prev = -1 mapped to index 0, digits 0–9 mapped to 1–10
+
+    static int solve(int pos, int prev, boolean tight, boolean leading, int n) {
+        if (pos == n) {
+            return leading ? 0 : 1; // valid if at least one digit placed
+        }
+
+        int prevIdx = prev + 1;
+        int tightIdx = tight ? 1 : 0;
+        int leadIdx = leading ? 1 : 0;
+
+        if (dp[pos][prevIdx][tightIdx][leadIdx] != -1) {
+            return dp[pos][prevIdx][tightIdx][leadIdx];
+        }
+
+        int limit = tight ? digits[pos] : 9;
+        int total = 0;
+
+        for (int d = 0; d <= limit; d++) {
+            if (!leading && d == prev) continue; // avoid consecutive same digits
+
+            boolean newLeading = leading && (d == 0);
+            int newPrev = newLeading ? -1 : d;
+
+            total += solve(
+                pos + 1,
+                newPrev,
+                tight && (d == limit),
+                newLeading,
+                n
+            );
+        }
+
+        return dp[pos][prevIdx][tightIdx][leadIdx] = total;
+    }
+
+    static int countValid(int x) {
+        if (x < 0) return 0;
+
+        String s = String.valueOf(x);
+        int n = s.length();
+        digits = new int[n];
+        for (int i = 0; i < n; i++) digits[i] = s.charAt(i) - '0';
+
+        dp = new int[n][11][2][2]; // pos, prev (-1..9 => 11), tight, leading
+        for (int[][][] arr3 : dp)
+            for (int[][] arr2 : arr3)
+                for (int[] arr1 : arr2)
+                    Arrays.fill(arr1, -1);
+
+        return solve(0, -1, true, true, n);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+
+        if (a == 0) {
+            System.out.println(countValid(b) + 1); // include 0
+        } else {
+            System.out.println(countValid(b) - countValid(a - 1));
+        }
+    }
+}
+```
+
+### ✅ Key points:
+
+* We map `prev = -1` → index `0` in DP array, and digits `0–9` → indices `1–10`.
+* Handles `leading` properly so leading zeros don’t violate the consecutive constraint.
+* Edge case: if `a == 0`, we add `1` to include `0` itself as a valid number (just like your Python fix).
+* This runs in `O(d * 10)` states where `d = number of digits`.
+
+---
+
+Do you want me to also **show a dry run in Java** (say for input `a=0, b=0` and `a=101, b=123`) so you can see exactly how this version gives the correct answers?

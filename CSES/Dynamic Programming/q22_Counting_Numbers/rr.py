@@ -32,4 +32,9 @@ def count_valid(x: int) -> int:
 
 
 a, b = map(int, input().split())
-print(count_valid(b) - count_valid(a - 1))
+if a - 1 == 0:
+    print(count_valid(b) - 0)
+elif a == 0:
+    print(count_valid(b) + 1)
+else:
+    print(count_valid(b) - (count_valid(a - 1)))
